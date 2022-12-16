@@ -260,7 +260,7 @@ class Receptor(nn.Module):
                     Success responses all get the same time.
         """
         loop = asyncio.get_event_loop()
-        return loop.run_until_complete ( self.async_backward ( synapses = synapses, inputs = inputs, grads = grads, timeout = timeout ) )
+        return loop.run_until_complete ( self.async_forward ( synapses = synapses, inputs = inputs, grads = grads, timeout = timeout ) )
 
     async def async_forward (
         self, 

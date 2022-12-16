@@ -25,7 +25,6 @@ import inspect
 import time
 from concurrent import futures
 from typing import Dict, List, Callable, Optional, Tuple, Union
-from bittensor._threadpool import prioritythreadpool
 
 import torch
 import grpc

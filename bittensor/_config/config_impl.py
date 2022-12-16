@@ -40,9 +40,6 @@ class Config ( Munch ):
     """
     def __init__(self, loaded_config = None ):
         super().__init__()
-        if loaded_config:
-            raise NotImplementedError('Function load_from_relative_path is not fully implemented.')
-
 
 
     def __repr__(self) -> str:

@@ -457,22 +457,25 @@ class Wallet():
         return bittensor.keyfile( path = coldkey_path )
 
     @property
+    def wallet_path(self):
+        return os.path.expanduser(os.path.join(self.path, self.name))
+
+    @property
     def coldkeypub_file(self) -> 'bittensor.Keyfile':
-        wallet_path = os.path.expanduser(os.path.join(self.path, self.name))
-        coldkeypub_path = os.path.join(wallet_path, "coldkeypub.txt")
+        coldkeypub_path = os.path.join(self.wallet_path, "coldkeypub.txt")
         return bittensor.Keyfile( path = coldkeypub_path )
 
-    def set_hotkey(self, keypair: 'bittensor.Keypair', encrypt: bool = False, overwrite: bool = False) -> 'bittensor.Keyfile':
+    def set_hotkey(self, keypair: 'bittensor.Keypair', encrypt: bool = False, overwrite: bool = False, password:Optional[str]=None) -> 'bittensor.Keyfile':
         self._hotkey = keypair
-        self.hotkey_file.set_keypair( keypair, encrypt = encrypt, overwrite = overwrite )
+        self.hotkey_file.set_keypair( keypair, encrypt = encrypt, overwrite = overwrite , password=password)
 
-    def set_coldkeypub(self, keypair: 'bittensor.Keypair', encrypt: bool = False, overwrite: bool = False) -> 'bittensor.Keyfile':
+    def set_coldkey(self, keypair: 'bittensor.Keypair', encrypt: bool = False, overwrite: bool = False,  password:Optional[str]=None) -> 'bittensor.Keyfile':
         self._coldkeypub = Keypair(ss58_address=keypair.ss58_address)
-        self.coldkeypub_file.set_keypair( self._coldkeypub, encrypt = encrypt, overwrite = overwrite  )
+        self.coldkeypub_file.set_keypair( self._coldkeypub, encrypt = encrypt, overwrite = overwrite , password=password )
 
-    def set_coldkey(self, keypair: 'bittensor.Keypair', encrypt: bool = True, overwrite: bool = False) -> 'bittensor.Keyfile':
-        self._coldkey = keypair
-        self.coldkey_file.set_keypair( self._coldkey, encrypt = encrypt, overwrite = overwrite )
+    def set_coldkeypub(self, keypair: 'bittensor.Keypair', encrypt: bool = False, overwrite: bool = False,  password:Optional[str]=None) -> 'bittensor.Keyfile':
+        self._coldkeypub = Keypair(ss58_address=keypair.ss58_address)
+        self.coldkeypub_file.set_keypair( self._coldkeypub, encrypt = encrypt, overwrite = overwrite , password=password )
 
     def get_coldkey(self, password: str = None ) -> 'bittensor.Keypair':
         self.coldkey_file.get_keypair( password = password )
@@ -577,7 +580,7 @@ class Wallet():
         """
         self.create_new_coldkey( n_words, use_password, overwrite )
 
-    def create_new_coldkey( self, n_words:int = 12, use_password: bool = True, overwrite:bool = False) -> 'Wallet':  
+    def create_new_coldkey( self, n_words:int = 12, use_password: bool = True, overwrite:bool = False, ) -> 'Wallet':  
         """ Creates a new coldkey, optionally encrypts it with the user's inputed password and saves to disk.
             Args:
                 n_words: (int, optional):
@@ -596,6 +599,10 @@ class Wallet():
         self.set_coldkey( keypair, encrypt = use_password, overwrite = overwrite)
         self.set_coldkeypub( keypair, overwrite = overwrite)
         return self
+
+    @staticmethod
+    def create_from_mnemonic(mnemonic:str):
+        return Keypair.create_from_mnemonic(mnemonic)
 
     def new_hotkey( self, n_words:int = 12, use_password: bool = False, overwrite:bool = False) -> 'Wallet':  
         """ Creates a new hotkey, optionally encrypts it with the user's inputed password and saves to disk.
