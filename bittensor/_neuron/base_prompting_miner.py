@@ -64,7 +64,7 @@ class BasePromptingMiner( bittensor.BaseMinerNeuron, ABC ):
         )
 
     def __init__( self, config: "bittensor.Config" = None ):
-        super( BasePromptingMiner, self ).__init__()
+        super( BasePromptingMiner, self ).__init__(config=config)
 
         class Synapse( bittensor.TextPromptingSynapse ):
             def priority( _, forward_call: "bittensor.TextPromptingForwardCall" ) -> float:
